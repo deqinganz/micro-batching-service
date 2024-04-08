@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: Micro-Batching
+  description: Micro-Batching Jobs
+  version: 1.0.0
+paths:
+  /job:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Job"
+      responses:
+        "201":
+          description: "A job has been successfully created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+  /job/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "The job with the specified ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+  /batch-size:
+    get:
+      operationId: getBatchSize
+      summary: get the current batch size
+      responses:
+        "200":
+          description: "The current batch size"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  size:
+                    type: integer
+    post:
+      operationId: updateBatchSize
+      summary: update the batch size
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchSize'
+      responses:
+        "200":
+          description: "The batch size has been successfully updated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchSize'
+  /batch-frequency:
+    get:
+      responses:
+        "200":
+          description: "The current batch frequency"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchFrequency'
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchFrequency'
+      responses:
+        "200":
+          description: "The batch frequency has been successfully updated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchFrequency'
+components:
+  schemas:
+    Job:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "The unique identifier for the job"
+        name:
+          type: string
+          description: "The name of the job"
+        status:
+          type: string
+          description: "The status of the job"
+          enum:
+            - "NEW"
+            - "IN_QUEUE"
+            - "SUBMITTED"
+            - "FAILED"
+    BatchSize:
+      type: integer
+    BatchFrequency:
+      type: integer
