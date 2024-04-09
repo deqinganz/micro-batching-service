@@ -1,0 +1,29 @@
+package service
+
+import (
+	"github.com/stretchr/testify/assert"
+	. "micro-batching/api"
+	"micro-batching/internal/service/processors"
+	"testing"
+)
+
+type RemoveTwoJobsProcessor struct {
+}
+
+func (d *RemoveTwoJobsProcessor) Process(jobs []Job) []Job {
+	return jobs[2:]
+}
+
+func TestJobProcess(t *testing.T) {
+	jobPreprocessing := NewJobProcess()
+
+	jobPreprocessing.Use("A", &processors.DummyProcessor{})
+	jobPreprocessing.Use("A", &RemoveTwoJobsProcessor{})
+	jobPreprocessing.Use("B", &processors.DummyProcessor{})
+
+	jobs := jobPreprocessing.Process([]Job{
+		{Type: "A"}, {Type: "B"}, {Type: "A"}, {Type: "A"},
+	})
+
+	assert.ElementsMatch(t, []Job{{Type: "A"}, {Type: "B"}}, jobs)
+}

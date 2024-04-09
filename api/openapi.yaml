@@ -10,7 +10,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Job"
+              $ref: "#/components/schemas/NewJobRequest"
       responses:
         "201":
           description: "A job has been successfully created"
@@ -88,10 +88,25 @@ paths:
                 $ref: '#/components/schemas/BatchFrequency'
 components:
   schemas:
+    NewJobRequest:
+      type: object
+      required:
+        - type
+        - params
+      properties:
+        type:
+          $ref: '#/components/schemas/JobType'
+        params:
+          oneOf:
+            - $ref: '#/components/schemas/UpdateUserInfoParams'
+            - $ref: '#/components/schemas/BalanceUpdateParams'
     Job:
       type: object
       required:
         - id
+        - status
+        - type
+        - params
       properties:
         id:
           type: string
@@ -99,7 +114,7 @@ components:
           description: "The unique identifier for the job"
         name:
           type: string
-          description: "The name of the job"
+          description: "The name of the job, optional"
         status:
           type: string
           description: "The status of the job"
@@ -108,6 +123,35 @@ components:
             - "IN_QUEUE"
             - "SUBMITTED"
             - "FAILED"
+        type:
+          $ref: '#/components/schemas/JobType'
+        params:
+          oneOf:
+            - $ref: '#/components/schemas/UpdateUserInfoParams'
+            - $ref: '#/components/schemas/BalanceUpdateParams'
+    JobType:
+      type: string
+      enum:
+          - "UPDATE_USER_INFO"
+          - "BALANCE_UPDATE"
+    UpdateUserInfoParams:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "The user name to update"
+        email:
+          type: string
+          description: "The new email address for the user"
+    BalanceUpdateParams:
+        type: object
+        properties:
+          userId:
+            type: string
+            description: "The user ID to update"
+          amount:
+            type: number
+            description: "The amount to add to the user's balance"
     BatchSize:
       type: integer
     BatchFrequency:

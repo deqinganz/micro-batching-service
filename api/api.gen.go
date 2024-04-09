@@ -30,6 +30,21 @@ const (
 	SUBMITTED JobStatus = "SUBMITTED"
 )
 
+// Defines values for JobType.
+const (
+	BALANCEUPDATE  JobType = "BALANCE_UPDATE"
+	UPDATEUSERINFO JobType = "UPDATE_USER_INFO"
+)
+
+// BalanceUpdateParams defines model for BalanceUpdateParams.
+type BalanceUpdateParams struct {
+	// Amount The amount to add to the user's balance
+	Amount *float32 `json:"amount,omitempty"`
+
+	// UserId The user ID to update
+	UserId *string `json:"userId,omitempty"`
+}
+
 // BatchFrequency defines model for BatchFrequency.
 type BatchFrequency = int
 
@@ -42,14 +57,44 @@ type Job struct {
 	Id openapi_types.UUID `json:"id"`
 
 	// Name The name of the job
-	Name *string `json:"name,omitempty"`
+	Name   *string    `json:"name,omitempty"`
+	Params Job_Params `json:"params"`
 
 	// Status The status of the job
-	Status *JobStatus `json:"status,omitempty"`
+	Status JobStatus `json:"status"`
+	Type   JobType   `json:"type"`
+}
+
+// Job_Params defines model for Job.Params.
+type Job_Params struct {
+	union json.RawMessage
 }
 
 // JobStatus The status of the job
 type JobStatus string
+
+// JobType defines model for JobType.
+type JobType string
+
+// NewJobRequest defines model for NewJobRequest.
+type NewJobRequest struct {
+	Params NewJobRequest_Params `json:"params"`
+	Type   JobType              `json:"type"`
+}
+
+// NewJobRequest_Params defines model for NewJobRequest.Params.
+type NewJobRequest_Params struct {
+	union json.RawMessage
+}
+
+// UpdateUserInfoParams defines model for UpdateUserInfoParams.
+type UpdateUserInfoParams struct {
+	// Email The new email address for the user
+	Email *string `json:"email,omitempty"`
+
+	// Name The user name to update
+	Name *string `json:"name,omitempty"`
+}
 
 // PostBatchFrequencyJSONRequestBody defines body for PostBatchFrequency for application/json ContentType.
 type PostBatchFrequencyJSONRequestBody = BatchFrequency
@@ -58,7 +103,131 @@ type PostBatchFrequencyJSONRequestBody = BatchFrequency
 type UpdateBatchSizeJSONRequestBody = BatchSize
 
 // PostJobJSONRequestBody defines body for PostJob for application/json ContentType.
-type PostJobJSONRequestBody = Job
+type PostJobJSONRequestBody = NewJobRequest
+
+// AsUpdateUserInfoParams returns the union data inside the Job_Params as a UpdateUserInfoParams
+func (t Job_Params) AsUpdateUserInfoParams() (UpdateUserInfoParams, error) {
+	var body UpdateUserInfoParams
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUpdateUserInfoParams overwrites any union data inside the Job_Params as the provided UpdateUserInfoParams
+func (t *Job_Params) FromUpdateUserInfoParams(v UpdateUserInfoParams) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUpdateUserInfoParams performs a merge with any union data inside the Job_Params, using the provided UpdateUserInfoParams
+func (t *Job_Params) MergeUpdateUserInfoParams(v UpdateUserInfoParams) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsBalanceUpdateParams returns the union data inside the Job_Params as a BalanceUpdateParams
+func (t Job_Params) AsBalanceUpdateParams() (BalanceUpdateParams, error) {
+	var body BalanceUpdateParams
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromBalanceUpdateParams overwrites any union data inside the Job_Params as the provided BalanceUpdateParams
+func (t *Job_Params) FromBalanceUpdateParams(v BalanceUpdateParams) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeBalanceUpdateParams performs a merge with any union data inside the Job_Params, using the provided BalanceUpdateParams
+func (t *Job_Params) MergeBalanceUpdateParams(v BalanceUpdateParams) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t Job_Params) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Job_Params) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsUpdateUserInfoParams returns the union data inside the NewJobRequest_Params as a UpdateUserInfoParams
+func (t NewJobRequest_Params) AsUpdateUserInfoParams() (UpdateUserInfoParams, error) {
+	var body UpdateUserInfoParams
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUpdateUserInfoParams overwrites any union data inside the NewJobRequest_Params as the provided UpdateUserInfoParams
+func (t *NewJobRequest_Params) FromUpdateUserInfoParams(v UpdateUserInfoParams) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUpdateUserInfoParams performs a merge with any union data inside the NewJobRequest_Params, using the provided UpdateUserInfoParams
+func (t *NewJobRequest_Params) MergeUpdateUserInfoParams(v UpdateUserInfoParams) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsBalanceUpdateParams returns the union data inside the NewJobRequest_Params as a BalanceUpdateParams
+func (t NewJobRequest_Params) AsBalanceUpdateParams() (BalanceUpdateParams, error) {
+	var body BalanceUpdateParams
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromBalanceUpdateParams overwrites any union data inside the NewJobRequest_Params as the provided BalanceUpdateParams
+func (t *NewJobRequest_Params) FromBalanceUpdateParams(v BalanceUpdateParams) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeBalanceUpdateParams performs a merge with any union data inside the NewJobRequest_Params, using the provided BalanceUpdateParams
+func (t *NewJobRequest_Params) MergeBalanceUpdateParams(v BalanceUpdateParams) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t NewJobRequest_Params) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *NewJobRequest_Params) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -530,17 +699,20 @@ func (sh *strictHandler) GetJobId(ctx *gin.Context, id openapi_types.UUID) {
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/8RWTW/bMAz9KwK3oxun6823Fk2HBGuxoQl2KIpBluhYQSyp+tiQBf7vA+UUzYfTHLZg",
-	"l9iwKJLv8ZHMGoRprNGog4diDV7U2PD0esODqO8cvkTUYkVfwsoiFKB0wDk6aLPO5lH9xv7jiSnpwDpj",
-	"0QWFya+S9CvRC6dsUEZDAdMaWdTqJSJTEnVQlULHKuNYqJEtTAkZVMY1PEABMSoJ2Ws4H5zSc4qmeYP9",
-	"rumEmWrL2cFlH3iIvv96d7brAHVsoHiCh9F3yGD88OPbbDQbQQaPs5v78XQ6uoUM7q7HX0a38HwQr82A",
-	"iFUOJTlRcsvGlAsUAVoyUroyhzndK+HMReJe6TmbmNITJBWWeHAKGfxE57uLl4PhYEhojUXNrYICrgbD",
-	"wRVkYHmoE/y8pJsX1Xbh5xjoQVXklMNYQgGfMexJhEB5a7TvCv1pOKSHMDqgTg64tUslkot84SmlV8XR",
-	"20eHFRTwIX+TZL7RY74XKZFzWCgRnUMdWILAql1za3wPiq/G98F4iejDjZGrMyJo/ztfezyxmntWImrm",
-	"oxDofRWXyxWLVvKAcpPyRh9+0/TvSiNNhr9EuTs8/JFZ0/a2zymFJG9k6GPTcLeCgvCkLu8zPKahWSJo",
-	"F/GZBPTYZbwzP4KLeHYtvQU+JiPi6KSCtqnuvia298qRLzaL42jLTtIQPgfN5Lm3OS//dYh9Kq9ptRxh",
-	"UDjc7sGFKfO1ku17HTgx5Vimye54gwGdh+JpDYpC0bSH140JaZ3u6inbgnJi8bbPZ9TeEaqm3R5mv1So",
-	"k4C8RUF/GiQb3yaS2vZPAAAA//8kgxv62wgAAA==",
+	"H4sIAAAAAAAC/8RWUY/iNhD+K9a0Ul9ywPXe8gYlWwXdcdsD1IcTQk4yASNi52ynK4ry36txAgskAZ22",
+	"aJ8IHnv8zTffzPgAscpyJVFaA/4BTLzBjLvPEd9xGeMiT7jFZ6555pZzrXLUVqD7xzNVSEtfCZpYi9wK",
+	"JcGH+QZZZWNWMZ4k9GM3yAqD+jfDoso5eGD3OYIPssgi1FB6QDvCpN0l2Vg4JmeFw/XqwFgt5BrK8rSi",
+	"oi3GllyOuI03Txp/FCjjPbmutwhpcV1d6/bMxL/Ybp6oqBm96IIpxY8CmUhQWpEK1CxV2oW/VRF4kCqd",
+	"cQs+FIVImiF4IHmG7a7JwlR65qxxOD/lSkn8moL//QC/akzBh1/6r+nu17nuVxleEO0yVXWmS+/2oTZ1",
+	"lMvSA2O5LUw7+Mp2CR9lkYH/HabB3+BBOF39tQgWAXgwW4y+hPN5MAYPnobh52AMy5Zoq4XbYCcqmtM2",
+	"EgepQGhM6E5Hfg249nSib9mio6Mf/3CCvXgeD+fBajELvq3C6dNX8GA0/Dyc/hGsKlMr6Cm+TFT0jQRp",
+	"bFNX75vBtzB6n8NWrA0GMONi11EB+MKcmdqKRmNOxUXd4eeqyfUTV1I/1VFoSchUNZ1+EbFWH1wvEXLN",
+	"JipyyhJ2hw0rePAPalMd/Ngb9AYEVuUoeS7Ah0+9Qe+TI9NuHCn9iE5+SM8b2Rqdfog7Thioc8KfaK9a",
+	"HmXJ5Eqait7fBwP6iZW0WLVvnuc7ETsX/a0hSMdhcE8KVzc5cppMx4XWKC1zIbD0cnuuTEsUz8q0heFq",
+	"ZqSS/QMjKN+dryue2IYbFiFKZoo4RmPSYrfb15JNasi1Pkw9xG5Kw026N0Z5WbKmY3a2l889hThvtNEU",
+	"Wcb1HnyKx5V528YuDVXd5jLiBwloViG+aIhWF/hwLb1e3CUj4uiugs6prlYd21fp6G/rh1BnyU7cWH8E",
+	"zZdTs7VMP/5vl1EYLaQO6dnSwWWs8bwatyrqH0RS3qrFiYrC5Dgw0aI2btgLuor6PhynV/VWuVSWdxbK",
+	"nSdluXygCjuomldvPPYi7MZJyeQY03M4YeHYkVSW/wUAAP//+HaQzIAMAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
