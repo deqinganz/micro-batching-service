@@ -4,10 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	openapitypes "github.com/oapi-codegen/runtime/types"
 	"micro-batching/api"
+	"micro-batching/internal/service"
 	"net/http"
 )
 
 type Handlers struct {
+	batching service.Batching
 }
 
 func (s *Handlers) GetBatchFrequency(c *gin.Context) {
@@ -31,12 +33,12 @@ func (s *Handlers) UpdateBatchSize(c *gin.Context) {
 }
 
 func (s *Handlers) PostJob(c *gin.Context) {
-	var job api.Job
-	if err := c.ShouldBindJSON(&job); err != nil {
+	var jobRequest api.JobRequest
+	if err := c.BindJSON(&jobRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{"job": s.batching.Take(jobRequest)})
 	}
-	c.JSON(http.StatusOK, gin.H{"job": job})
 }
 
 func (*Handlers) GetJobId(c *gin.Context, id openapitypes.UUID) {

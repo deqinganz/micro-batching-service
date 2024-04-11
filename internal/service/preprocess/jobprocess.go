@@ -1,4 +1,4 @@
-package service
+package preprocess
 
 import (
 	. "micro-batching/api"

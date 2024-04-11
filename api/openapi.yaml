@@ -10,7 +10,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewJobRequest"
+              $ref: "#/components/schemas/JobRequest"
       responses:
         "201":
           description: "A job has been successfully created"
@@ -88,18 +88,33 @@ paths:
                 $ref: '#/components/schemas/BatchFrequency'
 components:
   schemas:
-    NewJobRequest:
+    JobRequest:
       type: object
       required:
         - type
         - params
       properties:
+        name:
+          type: string
+          description: "The name of the job, optional"
         type:
           $ref: '#/components/schemas/JobType'
         params:
           oneOf:
             - $ref: '#/components/schemas/UpdateUserInfoParams'
             - $ref: '#/components/schemas/BalanceUpdateParams'
+    JobResult:
+      type: object
+      required:
+        - id
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "The unique identifier for the job"
+        status:
+          $ref: '#/components/schemas/JobStatus'
     Job:
       type: object
       required:
@@ -116,13 +131,7 @@ components:
           type: string
           description: "The name of the job, optional"
         status:
-          type: string
-          description: "The status of the job"
-          enum:
-            - "NEW"
-            - "IN_QUEUE"
-            - "SUBMITTED"
-            - "FAILED"
+          $ref: '#/components/schemas/JobStatus'
         type:
           $ref: '#/components/schemas/JobType'
         params:
@@ -134,9 +143,22 @@ components:
       enum:
           - "UPDATE_USER_INFO"
           - "BALANCE_UPDATE"
+    JobStatus:
+      type: string
+      description: "The status of the job"
+      enum:
+        - "QUEUED"
+        - "SUBMITTED"
+        - "ERROR_SUBMIT_FAILED"
     UpdateUserInfoParams:
       type: object
+      additionalProperties: false
+      required:
+        - userId
       properties:
+        userId:
+          type: string
+          description: "The user ID to update"
         name:
           type: string
           description: "The user name to update"
@@ -145,6 +167,9 @@ components:
           description: "The new email address for the user"
     BalanceUpdateParams:
         type: object
+        additionalProperties: false
+        required:
+          - userId
         properties:
           userId:
             type: string
@@ -154,5 +179,7 @@ components:
             description: "The amount to add to the user's balance"
     BatchSize:
       type: integer
+      description: "Number of jobs which pass to BatchProcessor"
     BatchFrequency:
       type: integer
+      description: "Times of batch processing per second"

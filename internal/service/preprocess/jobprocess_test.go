@@ -1,9 +1,9 @@
-package service
+package preprocess
 
 import (
 	"github.com/stretchr/testify/assert"
 	. "micro-batching/api"
-	"micro-batching/internal/service/processors"
+	"micro-batching/internal/service/preprocess/processors"
 	"testing"
 )
 
