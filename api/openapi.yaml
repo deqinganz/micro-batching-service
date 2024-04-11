@@ -178,8 +178,18 @@ components:
             type: number
             description: "The amount to add to the user's balance"
     BatchSize:
-      type: integer
-      description: "Number of jobs which pass to BatchProcessor"
+      type: object
+      required:
+        - batch-size
+      properties:
+        batch-size:
+          type: integer
+          description: "Number of jobs which pass to BatchProcessor"
     BatchFrequency:
-      type: integer
-      description: "Times of batch processing per second"
+      type: object
+      required:
+        - frequency
+      properties:
+        frequency:
+          type: integer
+          description: "Times of batch processing per second"

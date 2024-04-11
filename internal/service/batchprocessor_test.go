@@ -7,7 +7,7 @@ import (
 )
 
 func TestProcess(t *testing.T) {
-	jobs := []Job{{Status: NEW}, {Status: NEW}}
+	jobs := []Job{{Status: QUEUED}, {Status: QUEUED}}
 	Process(jobs)
 
 	assert.Equal(t, []Job{{Status: SUBMITTED}, {Status: SUBMITTED}}, jobs)

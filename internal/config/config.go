@@ -6,13 +6,13 @@ import (
 )
 
 type RunConfig struct {
-	BatchSize string `json:"batch-size"`
-	Frequency string `json:"frequency"`
+	BatchSize int `json:"batch-size"`
+	Frequency int `json:"frequency"`
 }
 
 func ReadConfig() (RunConfig, error) {
 	// read config
-	file, err := os.Open("config.json")
+	file, err := os.Open("internal/config/config.json")
 	if err != nil {
 		return RunConfig{}, err
 	}

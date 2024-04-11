@@ -7,8 +7,8 @@ import (
 
 func TestReadConfig(t *testing.T) {
 	expectedConfig := RunConfig{
-		BatchSize: "10",
-		Frequency: "1",
+		BatchSize: 10,
+		Frequency: 1,
 	}
 
 	readConfig, err := ReadConfig()
