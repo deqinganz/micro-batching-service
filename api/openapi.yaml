@@ -92,6 +92,7 @@ components:
     JobRequest:
       type: object
       required:
+        - name
         - type
         - params
       properties:
@@ -120,6 +121,7 @@ components:
       type: object
       required:
         - id
+        - name
         - status
         - type
         - params

@@ -16,7 +16,7 @@ func (b *BatchProcessor) Process(jobs []Job) {
 
 	var output string
 	for _, job := range jobs {
-		output = output + fmt.Sprintf("[%s %s \"%s\"] ", job.Id.String()[:8], job.Type, *job.Name)
+		output = output + fmt.Sprintf("[%s %s \"%s\"] ", job.Id.String()[:8], job.Type, job.Name)
 	}
 	log.Printf("Processed jobs: %s", output)
 }

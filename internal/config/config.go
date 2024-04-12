@@ -6,7 +6,6 @@ import (
 )
 
 type RunConfig struct {
-	QueueSize int `json:"queue-size"`
 	BatchSize int `json:"batch-size"`
 	Frequency int `json:"frequency"`
 }

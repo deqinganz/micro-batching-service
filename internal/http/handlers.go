@@ -12,10 +12,6 @@ type Handlers struct {
 	batching *service.Batching
 }
 
-func NewHandlers(batching *service.Batching) *Handlers {
-	return &Handlers{batching: batching}
-}
-
 func (h *Handlers) GetBatchFrequency(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"frequency": h.batching.GetFrequency().Frequency})
 }
@@ -49,7 +45,8 @@ func (h *Handlers) PostJob(c *gin.Context) {
 	if err := c.BindJSON(&jobRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"job": h.batching.Take(jobRequest)})
+		job := h.batching.Take(jobRequest)
+		c.JSON(http.StatusOK, gin.H{"job": job})
 	}
 }
 

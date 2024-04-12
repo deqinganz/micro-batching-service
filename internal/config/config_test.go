@@ -7,9 +7,8 @@ import (
 
 func TestReadConfig(t *testing.T) {
 	expectedConfig := RunConfig{
-		QueueSize: 100,
-		BatchSize: 10,
-		Frequency: 1,
+		BatchSize: 2,
+		Frequency: 5, // call batch processor every 5 seconds
 	}
 
 	readConfig, err := ReadConfig()

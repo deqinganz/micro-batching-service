@@ -62,7 +62,7 @@ type Job struct {
 	Id openapi_types.UUID `json:"id"`
 
 	// Name The name of the job, optional
-	Name   *string    `json:"name,omitempty"`
+	Name   string     `json:"name"`
 	Params Job_Params `json:"params"`
 
 	// Status The status of the job
@@ -78,7 +78,7 @@ type Job_Params struct {
 // JobRequest defines model for JobRequest.
 type JobRequest struct {
 	// Name The name of the job, optional
-	Name   *string           `json:"name,omitempty"`
+	Name   string            `json:"name"`
 	Params JobRequest_Params `json:"params"`
 	Type   JobType           `json:"type"`
 }
@@ -716,15 +716,15 @@ var swaggerSpec = []string{
 	"cq1iNEbIV5ajZgZjJZMjNCEtvlJwZ9iODlrhzcRfeInMef1gqrM6tCdHJGFbq8iwt5UggNwYIs3ZnHi0",
 	"St9GeOKoCeJYRZfgRFvupPhWIBMJSitSgZqlSjtNrFUEAaRKZ9xCCEUhksu8BiB5hs2m6YQirowFTOVe",
 	"v01m8oPOlcTnFMKvO/hZYwoh/NQ5lkqnqpOOr44F6UimqqqSMrj+UVNllS9lAMZyWzjv1z4fq2jmL5b7",
-	"CG5+MKdr5wl0TFY+K0sHBloyOiVRGnuZ2B+C//eQ+Y/omx0SfMmTT8QJUxAAyiIj438shovhAAKYLfpf",
-	"RvO5ex5Op8/TpX+zfOyNPg8HJ36PnO4Rh7uDvcVk0JsPl4vZcLocPT0+QwD93ufe02/DpT9qNNRI9veN",
-	"BMy42LToBN+YO6aJoNGYQwugNv19Ne9GgRPelWHwn00Tuihkqi4dfRGxVh9c46X5MFaRq0RhN3hxCgH8",
-	"idr4Dz8+dB+6FILKUfJcQAifHroPn5wC7cpx3fENujapXtHVLqWEEwaKHn5HezbuKDCTK2l81n7tdukn",
-	"VtKiH+g8zzcidiY6a0OQ9rvDrfo58+TIuWQ/LrRGaasRmtav58o0RDFRpikM16/6KtneMYLyf+frjCe2",
-	"4oZFiJKZIqZ5nhabzbYSclJB7tQ3havScKvGO6Osd4K924Ylo6F8binEWaOLpsgyrrcQUjyuezRdbNOQ",
-	"73D1iO8koJlHXOshVhd4dy0dHbfJiDi6qaBTqv1bx/ZZOjrragtsLdmxG3T3oPlkXWms0Y//pqcmRns0",
-	"xVuIjDWeluJaRZ2dSMprhThWUX87SvZLBlrUxi1IgpxR24f9TPSrXV1YwUkwN9bp8uWOImwha+6XHvYm",
-	"7MopyeQY01+BhI0Gjqay/DsAAP//RDXyBq4OAAA=",
+	"CG5+MKdr5wl0TDriDq4rgwciWhI7JW0ae5nfHyIN7+G0ovMfsTg7pPuSLp+PE8IgAJRFRj7+WAwXwwEE",
+	"MFv0v4zmc/c8nE6fp0v/ZvnYG30eDk78HqndAw93B3uLyaA3Hy4Xs+F0OXp6fIYA+r3Pvaffhkt/1Gio",
+	"kfPvGxCYcbFpkQu+MXdM80GjMYeGQE37+zqAGwxOf1dGw382W+iikKm6dPRFxFp9cG2YpsVYRa4ghd3g",
+	"xSkE8Cdq4z/8+NB96FIIKkfJcwEhfHroPnxyCrQrx3XHt+va3HpFV8KUEk4YKHr4He3Z8KPATK6k8Vn7",
+	"tduln1hJi3688zzfiNiZ6KwNQdpvErfK6MyTI+eS/bjQGqWtBmpav54r0xDFRJmmMFzb6qtke8cIyv+d",
+	"rzOe2IobFiFKZoqYpntabDbbSshJBblT3xuuSsMtHu+Mst4J9m4bVo6G8rmlEGeNLpoiy7jeQkjxuO7R",
+	"dLFNQ77D1SO+k4BmHnGth1hd4N21dHTcJiPi6KaCTqn2bx3bZ+norKudsLVkx27Q3YPmk62lsUY//pue",
+	"mhjt0RRvITLWeFqKaxV1diIprxXiWEX97SjZLxloURu3JwlyRm1/v9yFftGrCys4CebGcl2+3FGELWTN",
+	"/dLD3oRdOSWZHGP6Y5Cw0cDRVJZ/BwAA//9kQ1PXvA4AAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
