@@ -258,7 +258,7 @@ type ServerInterface interface {
 	PostJob(c *gin.Context)
 
 	// (GET /job/{id})
-	GetJobId(c *gin.Context, id openapi_types.UUID)
+	GetJobById(c *gin.Context, id openapi_types.UUID)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -335,8 +335,8 @@ func (siw *ServerInterfaceWrapper) PostJob(c *gin.Context) {
 	siw.Handler.PostJob(c)
 }
 
-// GetJobId operation middleware
-func (siw *ServerInterfaceWrapper) GetJobId(c *gin.Context) {
+// GetJobById operation middleware
+func (siw *ServerInterfaceWrapper) GetJobById(c *gin.Context) {
 
 	var err error
 
@@ -356,7 +356,7 @@ func (siw *ServerInterfaceWrapper) GetJobId(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetJobId(c, id)
+	siw.Handler.GetJobById(c, id)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -391,7 +391,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/batch-size", wrapper.GetBatchSize)
 	router.POST(options.BaseURL+"/batch-size", wrapper.UpdateBatchSize)
 	router.POST(options.BaseURL+"/job", wrapper.PostJob)
-	router.GET(options.BaseURL+"/job/:id", wrapper.GetJobId)
+	router.GET(options.BaseURL+"/job/:id", wrapper.GetJobById)
 }
 
 type GetBatchFrequencyRequestObject struct {
@@ -479,17 +479,17 @@ func (response PostJob201JSONResponse) VisitPostJobResponse(w http.ResponseWrite
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetJobIdRequestObject struct {
+type GetJobByIdRequestObject struct {
 	Id openapi_types.UUID `json:"id"`
 }
 
-type GetJobIdResponseObject interface {
-	VisitGetJobIdResponse(w http.ResponseWriter) error
+type GetJobByIdResponseObject interface {
+	VisitGetJobByIdResponse(w http.ResponseWriter) error
 }
 
-type GetJobId200JSONResponse Job
+type GetJobById200JSONResponse Job
 
-func (response GetJobId200JSONResponse) VisitGetJobIdResponse(w http.ResponseWriter) error {
+func (response GetJobById200JSONResponse) VisitGetJobByIdResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 
@@ -515,7 +515,7 @@ type StrictServerInterface interface {
 	PostJob(ctx context.Context, request PostJobRequestObject) (PostJobResponseObject, error)
 
 	// (GET /job/{id})
-	GetJobId(ctx context.Context, request GetJobIdRequestObject) (GetJobIdResponseObject, error)
+	GetJobById(ctx context.Context, request GetJobByIdRequestObject) (GetJobByIdResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -679,17 +679,17 @@ func (sh *strictHandler) PostJob(ctx *gin.Context) {
 	}
 }
 
-// GetJobId operation middleware
-func (sh *strictHandler) GetJobId(ctx *gin.Context, id openapi_types.UUID) {
-	var request GetJobIdRequestObject
+// GetJobById operation middleware
+func (sh *strictHandler) GetJobById(ctx *gin.Context, id openapi_types.UUID) {
+	var request GetJobByIdRequestObject
 
 	request.Id = id
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetJobId(ctx, request.(GetJobIdRequestObject))
+		return sh.ssi.GetJobById(ctx, request.(GetJobByIdRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetJobId")
+		handler = middleware(handler, "GetJobById")
 	}
 
 	response, err := handler(ctx, request)
@@ -697,8 +697,8 @@ func (sh *strictHandler) GetJobId(ctx *gin.Context, id openapi_types.UUID) {
 	if err != nil {
 		ctx.Error(err)
 		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(GetJobIdResponseObject); ok {
-		if err := validResponse.VisitGetJobIdResponse(ctx.Writer); err != nil {
+	} else if validResponse, ok := response.(GetJobByIdResponseObject); ok {
+		if err := validResponse.VisitGetJobByIdResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {
@@ -723,8 +723,8 @@ var swaggerSpec = []string{
 	"VtKiH+g8zzcidiY6a0OQ9rvDrfo58+TIuWQ/LrRGaasRmtav58o0RDFRpikM16/6KtneMYLyf+frjCe2",
 	"4oZFiJKZIqZ5nhabzbYSclJB7tQ3havScKvGO6Osd4K924Ylo6F8binEWaOLpsgyrrcQUjyuezRdbNOQ",
 	"73D1iO8koJlHXOshVhd4dy0dHbfJiDi6qaBTqv1bx/ZZOjrragtsLdmxG3T3oPlkXWms0Y//pqcmRns0",
-	"xVuIjDWeluJaRZ2dSMprhThW0SjZrxhoURu3HglyRU0f9hPRL3Z1WQUnodxYpsuXO0qwhaq5X3nYm7Ar",
-	"pyOTY0x/BBI2GjiSyvLvAAAA//9vxdJ1rA4AAA==",
+	"xVuIjDWeluJaRZ2dSMprhThWUX87SvZLBlrUxi1IgpxR24f9TPSrXV1YwUkwN9bp8uWOImwha+6XHvYm",
+	"7MopyeQY01+BhI0Gjqay/DsAAP//RDXyBq4OAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

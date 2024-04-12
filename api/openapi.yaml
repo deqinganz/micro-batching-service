@@ -20,6 +20,7 @@ paths:
                 $ref: "#/components/schemas/Job"
   /job/{id}:
     get:
+      operationId: getJobById
       parameters:
         - name: id
           in: path

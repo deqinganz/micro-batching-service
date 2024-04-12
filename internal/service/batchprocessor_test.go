@@ -8,7 +8,8 @@ import (
 
 func TestProcess(t *testing.T) {
 	jobs := []Job{{Status: QUEUED}, {Status: QUEUED}}
-	Process(jobs)
+	bp := BatchProcessor{}
+	bp.Process(jobs)
 
 	assert.Equal(t, []Job{{Status: SUBMITTED}, {Status: SUBMITTED}}, jobs)
 }

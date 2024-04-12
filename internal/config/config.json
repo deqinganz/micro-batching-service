@@ -1,4 +1,5 @@
 {
+  "queue-size": 100,
   "batch-size": 10,
   "frequency": 1
 }

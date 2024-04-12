@@ -9,10 +9,10 @@ import (
 )
 
 type Handlers struct {
-	batching service.Batching
+	batching *service.Batching
 }
 
-func NewHandlers(batching service.Batching) *Handlers {
+func NewHandlers(batching *service.Batching) *Handlers {
 	return &Handlers{batching: batching}
 }
 
@@ -53,7 +53,7 @@ func (h *Handlers) PostJob(c *gin.Context) {
 	}
 }
 
-func (h *Handlers) GetJobId(c *gin.Context, id openapitypes.UUID) {
+func (h *Handlers) GetJobById(c *gin.Context, id openapitypes.UUID) {
 	job, err := h.batching.JobInfo(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
