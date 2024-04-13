@@ -38,7 +38,7 @@ const (
 // BalanceUpdateParams defines model for BalanceUpdateParams.
 type BalanceUpdateParams struct {
 	// Amount The amount to add to the user's balance
-	Amount *float32 `json:"amount,omitempty"`
+	Amount float32 `json:"amount"`
 
 	// UserId The user ID to update
 	UserId string `json:"userId"`
@@ -106,6 +106,11 @@ type UpdateUserInfoParams struct {
 	UserId string `json:"userId"`
 }
 
+// SetPreprocessJSONBody defines parameters for SetPreprocess.
+type SetPreprocessJSONBody struct {
+	Preprocess bool `json:"preprocess"`
+}
+
 // PostBatchFrequencyJSONRequestBody defines body for PostBatchFrequency for application/json ContentType.
 type PostBatchFrequencyJSONRequestBody = BatchFrequency
 
@@ -114,6 +119,9 @@ type UpdateBatchSizeJSONRequestBody = BatchSize
 
 // PostJobJSONRequestBody defines body for PostJob for application/json ContentType.
 type PostJobJSONRequestBody = JobRequest
+
+// SetPreprocessJSONRequestBody defines body for SetPreprocess for application/json ContentType.
+type SetPreprocessJSONRequestBody SetPreprocessJSONBody
 
 // AsUpdateUserInfoParams returns the union data inside the Job_Params as a UpdateUserInfoParams
 func (t Job_Params) AsUpdateUserInfoParams() (UpdateUserInfoParams, error) {
@@ -259,6 +267,9 @@ type ServerInterface interface {
 
 	// (GET /job/{id})
 	GetJobById(c *gin.Context, id openapi_types.UUID)
+
+	// (POST /preprocess)
+	SetPreprocess(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -359,6 +370,19 @@ func (siw *ServerInterfaceWrapper) GetJobById(c *gin.Context) {
 	siw.Handler.GetJobById(c, id)
 }
 
+// SetPreprocess operation middleware
+func (siw *ServerInterfaceWrapper) SetPreprocess(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.SetPreprocess(c)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -392,6 +416,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/batch-size", wrapper.UpdateBatchSize)
 	router.POST(options.BaseURL+"/job", wrapper.PostJob)
 	router.GET(options.BaseURL+"/job/:id", wrapper.GetJobById)
+	router.POST(options.BaseURL+"/preprocess", wrapper.SetPreprocess)
 }
 
 type GetBatchFrequencyRequestObject struct {
@@ -496,6 +521,22 @@ func (response GetJobById200JSONResponse) VisitGetJobByIdResponse(w http.Respons
 	return json.NewEncoder(w).Encode(response)
 }
 
+type SetPreprocessRequestObject struct {
+	Body *SetPreprocessJSONRequestBody
+}
+
+type SetPreprocessResponseObject interface {
+	VisitSetPreprocessResponse(w http.ResponseWriter) error
+}
+
+type SetPreprocess204Response struct {
+}
+
+func (response SetPreprocess204Response) VisitSetPreprocessResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 
@@ -516,6 +557,9 @@ type StrictServerInterface interface {
 
 	// (GET /job/{id})
 	GetJobById(ctx context.Context, request GetJobByIdRequestObject) (GetJobByIdResponseObject, error)
+
+	// (POST /preprocess)
+	SetPreprocess(ctx context.Context, request SetPreprocessRequestObject) (SetPreprocessResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -706,25 +750,59 @@ func (sh *strictHandler) GetJobById(ctx *gin.Context, id openapi_types.UUID) {
 	}
 }
 
+// SetPreprocess operation middleware
+func (sh *strictHandler) SetPreprocess(ctx *gin.Context) {
+	var request SetPreprocessRequestObject
+
+	var body SetPreprocessJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.SetPreprocess(ctx, request.(SetPreprocessRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetPreprocess")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(SetPreprocessResponseObject); ok {
+		if err := validResponse.VisitSetPreprocessResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"H4sIAAAAAAAC/9xXS4+jRhD+K61KpFzY8Ww2J27jjCeytTvj+HFajawGCrst6Ga7m4wci/8eVYNtMGDv",
+	"ZmNF2hOIrq7HV1892EOo0kxJlNaAvwcTbjDl7nXIEy5DXGYRtzjlmqfuM48iYYWSPJlqlaG2Ag34MU8M",
+	"epDVPu2BpyqXlt4iNKEWGd0DHxYbZOUZs4rxKKKH3SDLDepfDAtKy+CB3WUIPsg8DVBD4QFJjKNulXTG",
+	"xo+kLHdOnxQYq4VcQ1F4oPFLLjRG4H8+aPMOnr4eL6hgi6Eli0Nuw80T3UIZ7shyM8i4fnTmlEjRMBWz",
+	"gHSwTKsQjRFyzTLUzGCoZHTyUUiLa4ryzMmTgV735uJvbHvmrL4z1VnTtWeHKPm2VYFhbxtBDnJjCD2n",
+	"c1p6q/R1D2uGulycqKDtnOhLohRfcmQiQmlFLFCzWGlHjq0KwINY6ZRb8CHPRdROsAeSp9itmk4o4kqZ",
+	"x1RWErlLTXYkvJL4EoP/eQ8/a4zBh58Gp5oZVAUzKMtkSYSSsarKpfAuX+oqseK18MBYbnNn/dL1iQrm",
+	"pWBxiODqhQWJnSfQIemAO5quFB6B6EnsjLhpbDu/P0QavgfTCs6vQnF+THcbrjIfNcDAA5R5Sjb+XI6W",
+	"o0fwYL4cfhovFu59NJu9zFbll9XTw/jj6LFm9wTtwXF/f9S3nD4+LEar5Xw0W42fn17Ag+HDx4fn30er",
+	"8qhTUSfm3zYpMOUi6aELvjF3TINCozHHhkDd+9s6gJsQjn8XZsSNhkw79SQoZKzahj6JUKt3rg3TtJio",
+	"wBWksAm2TsGDv1Cb8uL7u/u7ewpBZSh5JsCHD3f3dx8cA+3GYT0o23Vjbq3RlTClhJMPFD38gfZs+FFg",
+	"JlPSlFn79f6eHqGSFss5z7MsEaFTMdgacumwUlwrozNLDpw2+mGuNUpbDdS4KZ4p0xHFVJmuMFzbGqpo",
+	"d8MIiv8drzOc2IYbFiBKZvKQpnucJ8muInJUuTxo7g0XqeEWj++MstkJDmY7Vo6O8rnGEKeNBE2eplzv",
+	"wKd4XPfoEuzjUNnhmhHfiEDz0uNGD7E6x5tz6WS4j0aE0VUG1aEuvzq0z9Ix2FY7YW/JTtyguwXMta2l",
+	"s0bf/5eWuhB9oCneA2SosV6KWxUM9iIqLhXiRAXDnfuLcUsGWtTG7UmCjFHbPyx3frnoNYnl1YK5slwX",
+	"rzckYQ9Yi3LpYW/CbhyTTIYh/RhEbPx4gCnTWP1c9ZNqjnZ6Evv31Gq2q6blCq9AqQS5bG0CNeGubaBN",
+	"xd+6d5CTHhYnfP0VXb0o/gkAAP//Cd6XFekPAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

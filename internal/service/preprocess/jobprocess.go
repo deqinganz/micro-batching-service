@@ -19,10 +19,12 @@ func NewJobProcess() *JobProcess {
 	}
 }
 
+// Use adds a processor to the job process
 func (m *JobProcess) Use(jobType JobType, processor Processor) {
 	m.processors[jobType] = append(m.processors[jobType], processor)
 }
 
+// Process split jobs based on their types, and then processes them with the processors which designed for the job type
 func (m *JobProcess) Process(allJobs []Job) []Job {
 	jobMap := Split(allJobs)
 	resultChan := make(chan []Job, len(jobMap))

@@ -10,9 +10,7 @@ import (
 
 func TestQueue(t *testing.T) {
 	q := &Queue{}
-	q.Enqueue(Job{Name: "j1"})
-	q.Enqueue(Job{Name: "j2"})
-	q.Enqueue(Job{Name: "j3"})
+	q.EnqueueJobs([]Job{{Name: "j1"}, {Name: "j2"}, {Name: "j3"}})
 	assert.Equal(t, 3, q.Size())
 
 	jobs := q.Dequeue(2)
@@ -39,9 +37,7 @@ func TestQueue(t *testing.T) {
 func TestFind(t *testing.T) {
 	q := &Queue{}
 	id := uuid.New()
-	q.Enqueue(Job{Id: uuid.New(), Name: "Job1"})
-	q.Enqueue(Job{Id: id, Name: "Job2"})
-	q.Enqueue(Job{Id: uuid.New(), Name: "Job3"})
+	q.EnqueueJobs([]Job{{Id: uuid.New(), Name: "Job1"}, {Id: id, Name: "Job2"}, {Id: uuid.New(), Name: "Job3"}})
 
 	job, err := q.Find(id)
 	assert.NoError(t, err)

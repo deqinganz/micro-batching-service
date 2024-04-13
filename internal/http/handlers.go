@@ -48,7 +48,7 @@ func (h *Handlers) PostJob(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
 		job := h.batching.Take(jobRequest)
-		c.JSON(http.StatusOK, gin.H{"job": job})
+		c.JSON(http.StatusCreated, gin.H{"job": job})
 	}
 }
 
@@ -58,5 +58,15 @@ func (h *Handlers) GetJobById(c *gin.Context, id openapitypes.UUID) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"job": job})
+	}
+}
+
+func (h *Handlers) SetPreprocess(c *gin.Context) {
+	var request api.SetPreprocessJSONRequestBody
+	if err := c.BindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	} else {
+		h.batching.SetPreProcess(request.Preprocess)
+		c.JSON(http.StatusNoContent, nil)
 	}
 }

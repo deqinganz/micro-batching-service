@@ -10,8 +10,12 @@ type Queue struct {
 	buffer []Job
 }
 
-func (q *Queue) Enqueue(job Job) {
-	q.buffer = append(q.buffer, job)
+func (q *Queue) Enqueue(jobs Job) {
+	q.buffer = append(q.buffer, jobs)
+}
+
+func (q *Queue) EnqueueJobs(jobs []Job) {
+	q.buffer = append(q.buffer, jobs...)
 }
 
 func (q *Queue) Dequeue(n int) []Job {

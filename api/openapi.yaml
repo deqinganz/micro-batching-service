@@ -87,6 +87,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BatchFrequency'
+  /preprocess:
+    post:
+      operationId: setPreprocess
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - preprocess
+              properties:
+                preprocess:
+                  type: boolean
+      responses:
+        "204":
+          description: "The preprocess flag has been successfully updated"
 components:
   schemas:
     JobRequest:
@@ -173,6 +189,7 @@ components:
         additionalProperties: false
         required:
           - userId
+          - amount
         properties:
           userId:
             type: string

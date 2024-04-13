@@ -10,9 +10,9 @@ type RunConfig struct {
 	Frequency int `json:"frequency"`
 }
 
-func ReadConfig() (RunConfig, error) {
+func ReadConfig(configFile string) (RunConfig, error) {
 	// read config
-	file, err := os.Open("internal/config/config.json")
+	file, err := os.Open(configFile)
 	if err != nil {
 		return RunConfig{}, err
 	}
