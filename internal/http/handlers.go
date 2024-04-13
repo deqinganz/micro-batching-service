@@ -24,6 +24,7 @@ func (h *Handlers) PostBatchFrequency(c *gin.Context) {
 		h.batching.SetFrequency(frequency)
 		c.JSON(http.StatusOK, gin.H{"frequency": frequency.Frequency})
 	}
+	h.batching.Restart()
 }
 
 func (h *Handlers) GetBatchSize(c *gin.Context) {
@@ -38,6 +39,7 @@ func (h *Handlers) UpdateBatchSize(c *gin.Context) {
 		h.batching.SetBatchSize(batchSize)
 		c.JSON(http.StatusOK, gin.H{"batchSize": batchSize.BatchSize})
 	}
+	h.batching.Restart()
 }
 
 func (h *Handlers) PostJob(c *gin.Context) {

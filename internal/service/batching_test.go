@@ -28,6 +28,7 @@ func TestTake(t *testing.T) {
 	assert.NotNil(t, job.Id)
 
 	updateUserInfo, err := job.Params.AsUpdateUserInfoParams()
+	assert.NoError(t, err)
 	assert.Equal(t, "12", updateUserInfo.UserId)
 	assert.Equal(t, expectedUserName, *updateUserInfo.Name)
 }
