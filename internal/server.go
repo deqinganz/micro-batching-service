@@ -1,14 +1,14 @@
-package http
+package internal
 
 import (
+	"github.com/deqinganz/batching-api/api"
+	"github.com/deqinganz/micro-batching"
 	"github.com/gin-gonic/gin"
 	middleware "github.com/oapi-codegen/gin-middleware"
 	"log"
-	"micro-batching/api"
-	"micro-batching/internal/service"
 )
 
-func SetupHandler(batching *service.Batching) {
+func SetupHandler(batching *batching.Batching) {
 	r := gin.Default()
 
 	swagger, _ := api.GetSwagger()

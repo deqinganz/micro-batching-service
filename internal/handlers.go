@@ -1,15 +1,15 @@
-package http
+package internal
 
 import (
+	"github.com/deqinganz/batching-api/api"
+	"github.com/deqinganz/micro-batching"
 	"github.com/gin-gonic/gin"
 	openapitypes "github.com/oapi-codegen/runtime/types"
-	"micro-batching/api"
-	"micro-batching/internal/service"
 	"net/http"
 )
 
 type Handlers struct {
-	batching *service.Batching
+	batching *batching.Batching
 }
 
 func (h *Handlers) GetBatchFrequency(c *gin.Context) {
