@@ -1,9 +1,10 @@
-module micro-batching-service
+module github.com/deqinganz/micro-batching-service
 
 go 1.21.0
 
 require (
-	github.com/deqinganz/micro-batching v0.0.0-20240413165007-ff1613c025d4
+	github.com/deqinganz/batching-api v0.0.0-20240413160619-e47c9b747e6c
+	github.com/deqinganz/micro-batching v0.0.0-20240414023255-06755c3e93b0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/oapi-codegen/gin-middleware v1.0.1
 	github.com/oapi-codegen/runtime v1.1.1
@@ -14,8 +15,7 @@ require (
 	github.com/bytedance/sonic v1.11.3 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
-	github.com/deqinganz/batch-processor v0.0.0-20240413161956-573fb38e53d6 // indirect
-	github.com/deqinganz/batching-api v0.0.0-20240413160619-e47c9b747e6c // indirect
+	github.com/deqinganz/batch-processor v0.0.0-20240414021253-5a1648eee56e // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/getkin/kin-openapi v0.124.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

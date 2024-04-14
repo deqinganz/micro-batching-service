@@ -1,9 +1,10 @@
 # Micro-Batching Service
 
+This is a simple micro-batching service that uses Micro-Batching library to process jobs in batches, and exposes a REST API to interact with the library.
+
 ## Build and Run
 
 ```bash
-make codegen  # generate code from openapi.yaml
 go build .
 go run .
 ```
@@ -11,6 +12,34 @@ go run .
 ## Usage
 
 Configurations can be set in `config.json` file, can also be updated via endpoints when the program runs
+
+### Add Job
+
+To add a job to the queue:
+
+```bash 
+curl http://localhost:8080/job -H "Content-Type:application/json" -d '{
+    "type": "UPDATE_USER_INFO",
+    "name": "update user name to John",
+    "params": {
+        "userId": "123",
+        "name": "John"
+    }
+}'
+```
+
+or
+
+```bash
+curl http://localhost:8080/job -H "Content-Type:application/json" -d '{
+    "type": "BALANCE_UPDATE",
+    "name": "user1 to $50",
+    "params": {
+        "userId": "1",
+        "amount": 50
+    }
+}'
+```
 
 ### Set Frequency
 
@@ -44,13 +73,10 @@ To get the current batch size of BatchProcessor:
 curl http://localhost:8080/batch-size
 ```
 
-### Add Job to Batching Service
+### Set on/off for Preprocessing
 
+To turn on preprocessing via the `/preprocess` endpoint:
 
-## Design
-
-### Preprocessing
-
-This service can do an optional preprocessing step before sending the data to BatchProcessor. The preprocessing is disabled by default, can be turned on via `preprocess` endpoint. The preprocessing takes a list of jobs, and returns processed jobs. The idea is to allow possible filtering or merging to reduce the number of jobs to be processed by BatchProcessor.
-
-For example, 
+```bash
+curl http://localhost:8080/preprocess -H "Content-Type:application/json" -d '{"preprocessing":true}'
+```
