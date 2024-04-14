@@ -43,10 +43,10 @@ curl http://localhost:8080/job -H "Content-Type:application/json" -d '{
 
 ### Set Frequency
 
-To call BatchProcessor every 5 seconds via the `/batch-frequency` endpoint:
+To call BatchProcessor every 15 seconds via the `/batch-frequency` endpoint:
 
 ```bash
-curl http://localhost:8080/batch-frequency -H "Content-Type:application/json" -d '{"frequency":10}'
+curl http://localhost:8080/batch-frequency -H "Content-Type:application/json" -d '{"frequency":15}'
 ```
 
 ### Get Frequency
