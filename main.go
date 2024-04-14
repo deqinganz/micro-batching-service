@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/deqinganz/micro-batching"
+	"github.com/deqinganz/micro-batching-service/internal"
+
 	"log"
 	"os"
-
-	"micro-batching-service/internal"
 )
 
 func main() {
